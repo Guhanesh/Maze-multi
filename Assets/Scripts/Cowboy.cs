@@ -24,7 +24,7 @@ public class Cowboy : MonoBehaviour
     public Transform rightLowerArm;
     public Transform rightHand;
 
-    private float inputMovementX,inputMovementZ;
+    private float inputMovementX, inputMovementZ;
     private Animator animator;
     private Rigidbody rbody;
     private bool isGrounded;
@@ -46,9 +46,15 @@ public class Cowboy : MonoBehaviour
         animator = GetComponent<Animator>();
         rbody = GetComponent<Rigidbody>();
         mainCamera = Camera.main;
+        GameManager.EnemySpawned += EnemySpawned;
     }
 
-    
+    private void EnemySpawned(Transform enemyTrans)
+    {
+        targetTransform = enemyTrans;
+    }
+
+
     void Update()
     {
         inputMovementX = Input.GetAxis("Horizontal");
@@ -64,8 +70,8 @@ public class Cowboy : MonoBehaviour
 
         //if (Input.GetButtonDown("Jump") && isGrounded)
         //{
-          //  rbody.velocity = new Vector3(rbody.velocity.x, 0, 0);
-           // rbody.AddForce(Vector3.up * Mathf.Sqrt(jumpHeight * -1 * Physics.gravity.y), ForceMode.VelocityChange);
+        //  rbody.velocity = new Vector3(rbody.velocity.x, 0, 0);
+        // rbody.AddForce(Vector3.up * Mathf.Sqrt(jumpHeight * -1 * Physics.gravity.y), ForceMode.VelocityChange);
         //}
 
         if (Input.GetButtonDown("Fire1"))
@@ -78,12 +84,13 @@ public class Cowboy : MonoBehaviour
     {
         recoilTimer = Time.time;
 
-       // var go = Instantiate(bulletPrefab);
+        // var go = Instantiate(bulletPrefab);
         //go.transform.position = muzzleTransform.position;
         //var bullet = go.GetComponent<Bullet>();
-        var bullet =ObjectPoolingScript.SharedInstance.GetPooledObject();
+        var bullet = ObjectPoolingScript.SharedInstance.GetPooledObject();
+        print(bullet.transform.position);
+        bullet.Fire(muzzleTransform.position, muzzleTransform.eulerAngles, gameObject.layer, (targetTransform.position - muzzleTransform.position).normalized);
         bullet.gameObject.SetActive(true);
-        bullet.Fire(bullet.transform.position, muzzleTransform.eulerAngles, gameObject.layer);
     }
 
     private void LateUpdate()
@@ -130,6 +137,16 @@ public class Cowboy : MonoBehaviour
         // Look at target IK
         animator.SetLookAtWeight(1);
         animator.SetLookAtPosition(targetTransform.position);
+
+        // animator.SetBoneLocalRotation(HumanBodyBones.Spine,new Quaternion(30,0,0,0));
+    }
+    private void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject.tag=="Bullet")
+        {
+            print("GameOver");
+        }
+        
     }
 
 }

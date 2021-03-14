@@ -61,4 +61,14 @@ public class Bullet : MonoBehaviour
        // transform.rotation = Quaternion.LookRotation(vop, Vector3.forward);
 
     }
+
+    /// <summary>
+    /// OnCollisionEnter is called when this collider/rigidbody has begun
+    /// touching another rigidbody/collider.
+    /// </summary>
+    /// <param name="other">The Collision data associated with this collision.</param>
+    void OnCollisionEnter(Collision other)
+    {
+        print("Coll in bullet");
+    }
 }
