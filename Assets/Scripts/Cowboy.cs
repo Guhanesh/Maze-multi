@@ -78,10 +78,12 @@ public class Cowboy : MonoBehaviour
     {
         recoilTimer = Time.time;
 
-        var go = Instantiate(bulletPrefab);
-        go.transform.position = muzzleTransform.position;
-        var bullet = go.GetComponent<Bullet>();
-        bullet.Fire(go.transform.position, muzzleTransform.eulerAngles, gameObject.layer);
+       // var go = Instantiate(bulletPrefab);
+        //go.transform.position = muzzleTransform.position;
+        //var bullet = go.GetComponent<Bullet>();
+        var bullet =ObjectPoolingScript.SharedInstance.GetPooledObject();
+        bullet.gameObject.SetActive(true);
+        bullet.Fire(bullet.transform.position, muzzleTransform.eulerAngles, gameObject.layer);
     }
 
     private void LateUpdate()

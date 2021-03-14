@@ -33,16 +33,14 @@ public class Bullet : MonoBehaviour
 
         if (Time.time > lifeTimer + life)
         {
-            Destroy(gameObject);
+            gameObject.SetActive(false);
         }
     }
 
     private void Hit(Vector3 position, Vector3 direction, Vector3 reflected, Collider collider)
     {
         // Do something here with the object that was hit (collider), e.g. collider.gameObject 
-
-        Destroy(gameObject);
-       
+    gameObject.SetActive(false);
     }
 
     public void Fire(Vector3 position, Vector3 euler, int layer)
