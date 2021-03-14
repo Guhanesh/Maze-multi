@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class EnemyScript : MonoBehaviour
 {
-   [SerializeField] private GameObject bullet;
    [SerializeField] private LayerMask playerLayer;
    private float recoilTimer=-1;
     // Start is called before the first frame update
@@ -22,8 +21,9 @@ RaycastHit hit;
       
         if (Physics.Raycast(transform.position, transform.forward, out hit,10f,playerLayer))
         {
+//            print(hit.transform.name);
               var bullet =ObjectPoolingScript.SharedInstance.GetPooledObject();
-        print( bullet.transform.position);
+//        print( bullet.transform.position);
         bullet.Fire( transform.position, transform.eulerAngles, gameObject.layer,transform.forward);
         bullet.gameObject.SetActive(true);
         recoilTimer=-1;
@@ -33,7 +33,7 @@ RaycastHit hit;
                 if (Physics.Raycast(transform.position, -transform.forward, out hit,10f,playerLayer))
         {
                var bullet =ObjectPoolingScript.SharedInstance.GetPooledObject();
-        print( bullet.transform.position);
+      //  print( bullet.transform.position);
         bullet.Fire( transform.position, transform.eulerAngles, gameObject.layer,-transform.forward);
         bullet.gameObject.SetActive(true);
           recoilTimer=-1;
@@ -42,7 +42,7 @@ RaycastHit hit;
          if (Physics.Raycast(transform.position, transform.right, out hit,10f,playerLayer))
         {
             var bullet =ObjectPoolingScript.SharedInstance.GetPooledObject();
-        print( bullet.transform.position);
+      //  print( bullet.transform.position);
         bullet.Fire( transform.position, transform.eulerAngles, gameObject.layer, transform.right);
         bullet.gameObject.SetActive(true);
           recoilTimer=-1;
@@ -51,7 +51,7 @@ RaycastHit hit;
          if (Physics.Raycast(transform.position, -transform.right, out hit,10f,playerLayer))
         {
         var bullet =ObjectPoolingScript.SharedInstance.GetPooledObject();
-        print( bullet.transform.position);
+       // print( bullet.transform.position);
         bullet.Fire( transform.position, transform.eulerAngles, gameObject.layer, -transform.right);
         bullet.gameObject.SetActive(true);
          recoilTimer=-1;
