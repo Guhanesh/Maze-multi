@@ -4,17 +4,9 @@ using UnityEngine;
 
 public class UpDownAnimation : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
+   
  
-//adjust this to change speed
 [SerializeField]float speed = 5f;
-//adjust this to change how high it goes
 [SerializeField]float height = 0.5f;
  
 void Update() {
