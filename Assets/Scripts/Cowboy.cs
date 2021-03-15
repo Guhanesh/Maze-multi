@@ -30,6 +30,7 @@ public class Cowboy : MonoBehaviour
     private bool isGrounded;
     private Camera mainCamera;
     private float recoilTimer;
+    private Vector3 lastDir,lastVec;
 
     private int FacingSign
     {
@@ -57,8 +58,8 @@ public class Cowboy : MonoBehaviour
 
     void Update()
     {
-        inputMovementX = Input.GetAxis("Horizontal");
-        inputMovementZ = Input.GetAxis("Vertical");
+        inputMovementX = Input.GetAxisRaw("Horizontal");
+        inputMovementZ = Input.GetAxisRaw("Vertical");
 
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
@@ -89,7 +90,7 @@ public class Cowboy : MonoBehaviour
         //var bullet = go.GetComponent<Bullet>();
         var bullet = ObjectPoolingScript.SharedInstance.GetPooledObject();
         print(bullet.transform.position);
-        bullet.Fire(muzzleTransform.position, muzzleTransform.eulerAngles, gameObject.layer, (targetTransform.position - muzzleTransform.position).normalized);
+        bullet.Fire(muzzleTransform.position, muzzleTransform.eulerAngles, gameObject.layer, transform.forward);
         bullet.gameObject.SetActive(true);
     }
 
@@ -121,7 +122,33 @@ public class Cowboy : MonoBehaviour
         animator.SetFloat("speed", (FacingSign * rbody.velocity.magnitude) / walkSpeed);
 
         // Facing Rotation
-        rbody.MoveRotation(Quaternion.Euler(new Vector3(0, 90 * Mathf.Sign(targetTransform.position.x - transform.position.x), 0)));
+        Vector3 moveRot=new Vector3(0,0,0);
+        if (inputMovementX==1)
+        {
+            moveRot=new Vector3(0,90,0);
+        }
+        else if (inputMovementX==-1)
+        {
+            moveRot=new Vector3(0,-90,0);
+        }
+        else if (inputMovementZ==1)
+        {
+             moveRot=new Vector3(0,0,0);
+        }
+         else if (inputMovementZ==-1)
+        {
+             moveRot=new Vector3(0,180,0);
+        }
+        else
+        {
+            moveRot=lastVec;
+        }
+        lastVec=moveRot;
+        
+         rbody.MoveRotation(Quaternion.Euler(moveRot));
+       // rbody.MoveRotation(Quaternion.Euler(new Vector3(0, 90 * Mathf.Sign(targetTransform.position.x - transform.position.x), 0)));
+       //rbody.MoveRotation(Quaternion.Euler(new Vector3(0, 0 , 0)));
+       // rbody.MoveRotation(Quaternion.Euler(new Vector3(0, 0f, 0)));
 
         // Ground Check
         isGrounded = Physics.CheckSphere(groundCheckTransform.position, groundCheckRadius, groundMask, QueryTriggerInteraction.Ignore);
@@ -130,13 +157,28 @@ public class Cowboy : MonoBehaviour
 
     private void OnAnimatorIK()
     {
+//        print(rbody.velocity+" Vel");
         // Weapon Aim at Target IK
-        animator.SetIKPositionWeight(AvatarIKGoal.RightHand, 1);
-        animator.SetIKPosition(AvatarIKGoal.RightHand, targetTransform.position);
-
+         Vector3 targetPos;
+if ((Mathf.Abs(inputMovementX)==1)||(Mathf.Abs(inputMovementZ)==1))
+{
+      targetPos= rbody.velocity*8f;
+      lastDir=targetPos;
+       print(targetPos+ " 1 "+rbody.velocity);
+}
+else
+{
+    
+    targetPos=lastDir;
+     print(targetPos+ " 2 "+rbody.velocity);
+}
+          animator.SetIKPositionWeight(AvatarIKGoal.RightHand, 1);
+        animator.SetIKPosition(AvatarIKGoal.RightHand, targetPos);
+       
         // Look at target IK
         animator.SetLookAtWeight(1);
-        animator.SetLookAtPosition(targetTransform.position);
+      
+        animator.SetLookAtPosition(targetPos);
 
         // animator.SetBoneLocalRotation(HumanBodyBones.Spine,new Quaternion(30,0,0,0));
     }
