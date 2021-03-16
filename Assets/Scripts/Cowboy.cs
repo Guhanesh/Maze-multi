@@ -2,8 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class Cowboy : MonoBehaviour
+using Photon.Chat;
+using Photon.Realtime;
+using Photon;
+using Photon.Pun;
+public class Cowboy : MonoBehaviourPunCallbacks
 {
     public float walkSpeed = 2.5f;
     public float jumpHeight = 5f;
@@ -58,6 +61,10 @@ public class Cowboy : MonoBehaviour
 
     void Update()
     {
+        if (!photonView.IsMine)
+        {
+            return;
+        }
         inputMovementX = Input.GetAxisRaw("Horizontal");
         inputMovementZ = Input.GetAxisRaw("Vertical");
 
