@@ -84,11 +84,12 @@ public class Cowboy : MonoBehaviourPunCallbacks
 
         if (Input.GetButtonDown("Fire1"))
         {
-            Fire();
+            photonView.RPC("Fire",RpcTarget.All);
+           // Fire();
         }
     }
-
-    private void Fire()
+    [PunRPC]
+    private void Fire(PhotonMessageInfo info)
     {
         recoilTimer = Time.time;
 
